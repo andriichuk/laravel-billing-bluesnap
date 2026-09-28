@@ -49,7 +49,7 @@ final class HostedPageTest extends TestCase
         ]);
 
         self::assertSame(
-            'https://sandbox.bluesnap.com/buynow/checkout?plan3173219&merchantid=1469228&enc=opaque%2Btoken%2F%3D',
+            'https://sandbox.bluesnap.com/buynow/checkout?plan3173219&merchantid=1469228&enc=vzog4BXQAg9UwYR91UpewQj7QREmV7T1iS6fj%2FlhAnab2zz1mUlnbpLJm6wpityBcDNpYIQfXFYpxyLGL4HKn%2F%2FhU0rafW2Hw2HVPAymDiinZ4MwcrePbJdfAgk6KsIcpoZA4YaMTuvi5gPu1LCDBw%3D%3D',
             $url,
         );
         self::assertSame('application/xml', $http->lastRequest()->getHeaderLine('Content-Type'));

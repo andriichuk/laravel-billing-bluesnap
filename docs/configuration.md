@@ -17,7 +17,7 @@ BLUESNAP_WEBHOOK_VERIFY_SIGNATURE=true
 BLUESNAP_WEBHOOK_VERIFY_IP=false
 ```
 
-Supported environments are `sandbox` and `production`. The merchant ID is required because Hosted Payment Page URLs include it. Currency must be a three-letter ISO 4217 code. Signature verification may only be disabled when Laravel is running in `local` or `testing`; production fails closed.
+Supported environments are `sandbox` and `production`. The merchant ID is optional for API-only integrations and required when `hostedCheckoutUrl()` is called because Hosted Payment Page URLs include it. Currency must be a three-letter ISO 4217 code. Signature verification may only be disabled when Laravel is running in `local` or `testing`; production fails closed.
 
 `BLUESNAP_CHECKOUT_HOST` is optional. The SDK defaults to `https://sandbox.bluesnap.com` in sandbox and `https://checkout.bluesnap.com` in production. Set it only when BlueSnap gives your account a different checkout origin; it must be an HTTPS origin without a path.
 
