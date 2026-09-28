@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.4.1 - 2026-09-28
+
+- Adopt the canonical Laravel Pint preset and enforce multiline member PHPDoc formatting.
+
 ## 0.4.0 - 2026-09-28
 
 - Add a streaming, cursor- and page-size-aware subscription sweep while retaining targeted customer, subscription, and transaction reconciliation.
