@@ -42,6 +42,7 @@ final readonly class BlueSnapManager
     {
         $client = $this->client($config);
         $currency = is_string($config['currency'] ?? null) ? strtoupper($config['currency']) : 'USD';
+
         if (preg_match('/^[A-Z]{3}$/', $currency) !== 1) {
             throw new InvalidBlueSnapConfiguration('BlueSnap currency must be a three-letter ISO 4217 code.');
         }
@@ -56,11 +57,13 @@ final readonly class BlueSnapManager
         $transactions = new BlueSnapTransactionGateway($client, $transactionMapper, $exceptions);
         $webhookConfig = is_array($config['webhook'] ?? null) ? $config['webhook'] : [];
         $verifySignature = (bool) ($webhookConfig['verify_signature'] ?? true);
+
         if (! $verifySignature && ! $this->app->environment(['local', 'testing'])) {
             throw new InvalidBlueSnapConfiguration('BlueSnap webhook signature verification may only be disabled in local or testing environments.');
         }
         $environment = $this->environment($config['environment'] ?? 'sandbox');
         $allowedIps = $webhookConfig['allowed_ips'] ?? [];
+
         if (! is_array($allowedIps) || $allowedIps === []) {
             $allowedIps = $environment === Environment::Sandbox ? self::SANDBOX_IPS : self::PRODUCTION_IPS;
         }
@@ -85,9 +88,11 @@ final readonly class BlueSnapManager
     {
         $username = is_string($config['username'] ?? null) ? trim($config['username']) : '';
         $password = is_string($config['password'] ?? null) ? $config['password'] : '';
+
         if ($username === '' || $password === '') {
             throw new InvalidBlueSnapConfiguration('BlueSnap username and password are required when resolving the billing driver.');
         }
+
         foreach ([ClientInterface::class, RequestFactoryInterface::class, StreamFactoryInterface::class] as $contract) {
             if (! $this->app->bound($contract)) {
                 throw new InvalidBlueSnapConfiguration("A PSR implementation for [{$contract}] must be bound in the container.");

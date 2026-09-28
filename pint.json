@@ -1,3 +1,22 @@
 {
-    "preset": "laravel"
+    "preset": "laravel",
+    "rules": {
+        "multiline_promoted_properties": {
+            "minimum_number_of_parameters": 2
+        },
+        "blank_line_before_statement": {
+            "statements": [
+                "break",
+                "continue",
+                "do",
+                "for",
+                "foreach",
+                "if",
+                "return",
+                "switch",
+                "try",
+                "while"
+            ]
+        }
+    }
 }

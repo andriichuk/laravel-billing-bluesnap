@@ -20,7 +20,11 @@ use Andriichuk\LaravelBillingBlueSnap\ValueObjects\HostedFieldsToken;
 
 final readonly class BlueSnapCustomerGateway implements ManagesCustomers, SupportsPaymentMethodUpdates
 {
-    public function __construct(private BlueSnapClient $client, private CustomerMapper $mapper, private ExceptionMapper $exceptions) {}
+    public function __construct(
+        private BlueSnapClient $client,
+        private CustomerMapper $mapper,
+        private ExceptionMapper $exceptions
+    ) {}
 
     public function createCustomer(CreateCustomerData $data): CustomerData
     {
@@ -36,6 +40,7 @@ final readonly class BlueSnapCustomerGateway implements ManagesCustomers, Suppor
         return $this->exceptions->execute(function () use ($customer, $data): CustomerData {
             $response = $this->client->vaultedShoppers()->update($customer->id, $this->mapper->updatePayload($data));
             $payload = $response->json();
+
             if ($payload === []) {
                 $payload = $this->client->vaultedShoppers()->retrieve($customer->id)->json();
             }
@@ -71,10 +76,12 @@ final readonly class BlueSnapCustomerGateway implements ManagesCustomers, Suppor
     private function idFromLocation(Response $response): ?string
     {
         $location = $response->location();
+
         if ($location === null) {
             return null;
         }
         $path = parse_url($location, PHP_URL_PATH);
+
         if (! is_string($path)) {
             return null;
         }

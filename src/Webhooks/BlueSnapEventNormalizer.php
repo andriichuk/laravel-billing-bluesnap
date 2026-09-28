@@ -69,6 +69,7 @@ final class BlueSnapEventNormalizer
     {
         foreach ($keys as $key) {
             $value = $payload[$key] ?? null;
+
             if ((is_string($value) || is_int($value)) && trim((string) $value) !== '') {
                 return (string) $value;
             }

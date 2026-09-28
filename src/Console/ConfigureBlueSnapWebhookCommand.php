@@ -26,12 +26,14 @@ final class ConfigureBlueSnapWebhookCommand extends Command
     public function handle(BillingManager $billing): int
     {
         $url = $this->argument('url');
+
         if (! is_string($url) || filter_var($url, FILTER_VALIDATE_URL) === false || ! str_starts_with($url, 'https://')) {
             $this->components->error('The BlueSnap webhook URL must be a valid HTTPS URL.');
 
             return self::INVALID;
         }
         $driver = $billing->driver('bluesnap');
+
         if (! $driver instanceof BlueSnapDriver) {
             $this->components->error('The registered [bluesnap] billing driver is invalid.');
 
@@ -40,6 +42,7 @@ final class ConfigureBlueSnapWebhookCommand extends Command
         $disabled = $this->option('disable');
         $disabled = is_array($disabled) ? array_values(array_filter($disabled, 'is_string')) : [];
         $destination = ['ipnUrl' => $url];
+
         foreach (self::FLAGS as $flag) {
             $destination[$flag] = ! in_array($flag, $disabled, true);
         }

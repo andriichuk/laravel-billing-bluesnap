@@ -20,6 +20,7 @@ final readonly class BlueSnapWebhookParser
         }
         $payload = [];
         parse_str($request->rawBody, $payload);
+
         if ($payload === []) {
             throw InvalidBillingPayload::because('The BlueSnap webhook form payload is empty or malformed.');
         }

@@ -29,6 +29,7 @@ final class ServiceProviderTest extends TestCase
 
         self::assertContains('bluesnap', app(BillingManager::class)->registeredDrivers());
         $command = $this->artisan('route:list');
+
         if (is_int($command)) {
             self::fail('The route:list command did not return a pending command.');
         }

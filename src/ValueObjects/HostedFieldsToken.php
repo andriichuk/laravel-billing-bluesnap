@@ -15,9 +15,12 @@ final readonly class HostedFieldsToken implements BlueSnapPaymentSource
 
     public string $value;
 
-    public function __construct(string $value, public ?DateTimeImmutable $expiresAt = null)
-    {
+    public function __construct(
+        string $value,
+        public ?DateTimeImmutable $expiresAt = null
+    ) {
         $value = trim($value);
+
         if ($value === '') {
             throw InvalidBillingPayload::because('A BlueSnap Hosted Payment Fields token must not be empty.');
         }

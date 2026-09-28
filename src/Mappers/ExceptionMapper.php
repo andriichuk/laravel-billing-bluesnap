@@ -43,18 +43,23 @@ final class ExceptionMapper
         if ($exception instanceof ApiException && $this->wasDeclined($exception)) {
             return new PaymentDeclined('BlueSnap declined the payment.', previous: $exception);
         }
+
         if ($exception instanceof NotFoundException) {
             return new BillingResourceNotFound('The requested BlueSnap billing resource was not found.', previous: $exception);
         }
+
         if ($exception instanceof ConflictException) {
             return new BillingConflict('BlueSnap rejected a conflicting or duplicate operation.', previous: $exception);
         }
+
         if ($exception instanceof RateLimitException || $exception instanceof TransportException) {
             return new RetryableProviderOperation('The BlueSnap operation can be retried.', previous: $exception);
         }
+
         if ($exception instanceof ApiException && $exception->statusCode >= 500) {
             return new RetryableProviderOperation('BlueSnap is temporarily unable to process the operation.', previous: $exception);
         }
+
         if ($exception instanceof ValidationException) {
             return new InvalidBillingPayload('BlueSnap rejected the billing payload.', previous: $exception);
         }
@@ -70,6 +75,7 @@ final class ExceptionMapper
                 is_int($error->code) || is_string($error->code) ? (string) $error->code : null,
                 $error->description,
             ], static fn (?string $value): bool => $value !== null)));
+
             if (str_contains($haystack, 'declin') || str_contains($haystack, 'insufficient')) {
                 return true;
             }

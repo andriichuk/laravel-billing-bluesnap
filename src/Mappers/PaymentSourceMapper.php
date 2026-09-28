@@ -19,14 +19,17 @@ final class PaymentSourceMapper
     public function forSubscription(?CustomerReference $customer, ?PaymentMethodReference $paymentMethod, array $providerOptions): array
     {
         $explicit = $providerOptions['paymentSource'] ?? null;
+
         if ($explicit !== null && ! is_array($explicit)) {
             throw InvalidBillingPayload::because('BlueSnap paymentSource must be an object.');
         }
+
         if ($explicit !== null && $paymentMethod !== null) {
             throw InvalidBillingPayload::because('Conflicting BlueSnap payment sources were supplied.');
         }
 
         $payload = [];
+
         if ($customer !== null) {
             $payload['vaultedShopperId'] = $customer->id;
         }
@@ -48,6 +51,7 @@ final class PaymentSourceMapper
 
         if (VaultedShopperReference::supports($paymentMethod)) {
             $shopper = VaultedShopperReference::fromPaymentMethodReference($paymentMethod);
+
             if ($customer !== null && $customer->id !== $shopper->id) {
                 throw InvalidBillingPayload::because('The customer and vaulted shopper payment source do not match.');
             }
@@ -65,6 +69,7 @@ final class PaymentSourceMapper
         $forbidden = ['cardnumber', 'cvv', 'cvv2', 'securitycode', 'accountnumber'];
         array_walk_recursive($source, static function (mixed $value, int|string $key) use ($forbidden): void {
             $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', (string) $key) ?? '');
+
             if (in_array($normalized, $forbidden, true)) {
                 throw InvalidBillingPayload::because('Raw card and bank account data is not accepted by the BlueSnap billing driver.');
             }

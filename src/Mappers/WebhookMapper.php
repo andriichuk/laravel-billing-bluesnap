@@ -10,7 +10,10 @@ use Andriichuk\LaravelBillingBlueSnap\Webhooks\BlueSnapPayloadSanitizer;
 
 final readonly class WebhookMapper
 {
-    public function __construct(private BlueSnapPayloadSanitizer $sanitizer, private BlueSnapEventNormalizer $normalizer) {}
+    public function __construct(
+        private BlueSnapPayloadSanitizer $sanitizer,
+        private BlueSnapEventNormalizer $normalizer
+    ) {}
 
     /** @param array<string, mixed> $payload */
     public function fromPayload(array $payload, string $rawBody): ParsedWebhook
@@ -34,6 +37,7 @@ final readonly class WebhookMapper
     {
         foreach (['referenceNumber', 'transactionId', 'subscriptionId', 'vaultedShopperId', 'accountId', 'contractId'] as $key) {
             $value = $this->string($payload[$key] ?? null);
+
             if ($value !== null) {
                 return $value;
             }

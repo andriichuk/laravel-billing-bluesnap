@@ -12,7 +12,10 @@ use DateTimeImmutable;
 
 final readonly class PaymentFieldsTokenService
 {
-    public function __construct(private BlueSnapClient $client, private ExceptionMapper $exceptions) {}
+    public function __construct(
+        private BlueSnapClient $client,
+        private ExceptionMapper $exceptions
+    ) {}
 
     /** @param array<string, scalar|null> $options */
     public function createToken(array $options = []): HostedFieldsToken
@@ -22,6 +25,7 @@ final readonly class PaymentFieldsTokenService
             $location = $response->location();
             $path = $location !== null ? parse_url($location, PHP_URL_PATH) : null;
             $token = is_string($path) ? rawurldecode(basename($path)) : '';
+
             if ($token === '') {
                 throw new ProviderRequestFailed('BlueSnap did not return a Hosted Payment Fields token.');
             }

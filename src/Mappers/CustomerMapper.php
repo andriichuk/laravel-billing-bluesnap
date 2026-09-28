@@ -13,7 +13,10 @@ use Andriichuk\LaravelBillingBlueSnap\Webhooks\BlueSnapPayloadSanitizer;
 
 final readonly class CustomerMapper
 {
-    public function __construct(private BlueSnapPayloadSanitizer $sanitizer, private PaymentSourceMapper $paymentSources) {}
+    public function __construct(
+        private BlueSnapPayloadSanitizer $sanitizer,
+        private PaymentSourceMapper $paymentSources
+    ) {}
 
     /** @return array<string, mixed> */
     public function createPayload(CreateCustomerData $data): array
@@ -28,6 +31,7 @@ final readonly class CustomerMapper
                 throw InvalidBillingPayload::because('Conflicting BlueSnap customer payment sources were supplied.');
             }
             $token = trim((string) $payload['pfToken']);
+
             if ($token === '') {
                 throw InvalidBillingPayload::because('A BlueSnap Hosted Payment Fields token must not be empty.');
             }
@@ -55,6 +59,7 @@ final readonly class CustomerMapper
     public function fromProvider(array $payload, ?string $fallbackId = null): CustomerData
     {
         $id = $this->scalarString($payload['vaultedShopperId'] ?? $fallbackId);
+
         if ($id === null) {
             throw InvalidBillingPayload::because('BlueSnap did not return a vaulted shopper ID.');
         }
@@ -74,15 +79,19 @@ final readonly class CustomerMapper
     private function identity(?string $name, ?string $email): array
     {
         $identity = [];
+
         if ($name !== null && trim($name) !== '') {
             [$first, $last] = array_pad(preg_split('/\s+/', trim($name), 2) ?: [], 2, null);
+
             if (is_string($first) && $first !== '') {
                 $identity['firstName'] = $first;
             }
+
             if (is_string($last) && $last !== '') {
                 $identity['lastName'] = $last;
             }
         }
+
         if ($email !== null) {
             $identity['email'] = $email;
         }

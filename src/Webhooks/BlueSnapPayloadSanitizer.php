@@ -18,8 +18,10 @@ final class BlueSnapPayloadSanitizer
     public function sanitize(array $payload): array
     {
         $sanitized = [];
+
         foreach ($payload as $key => $value) {
             $normalized = strtolower(preg_replace('/[^a-z0-9]/i', '', (string) $key) ?? '');
+
             if (in_array($normalized, self::SENSITIVE_KEYS, true)) {
                 continue;
             }

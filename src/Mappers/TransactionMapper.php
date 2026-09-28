@@ -21,6 +21,7 @@ final readonly class TransactionMapper
     public function fromProvider(array $payload, ?string $fallbackId = null): TransactionData
     {
         $id = $this->scalarString($payload['transactionId'] ?? $payload['referenceNumber'] ?? $fallbackId);
+
         if ($id === null) {
             throw InvalidBillingPayload::because('BlueSnap did not return a transaction ID.');
         }
@@ -31,6 +32,7 @@ final readonly class TransactionMapper
         $currency = $payload['currency'] ?? $payload['invoiceChargeCurrency'] ?? null;
         $amount = $payload['amount'] ?? $payload['invoiceChargeAmount'] ?? null;
         $billedAt = $this->date($payload['transactionDate'] ?? null);
+
         if ($billedAt === null && is_string($payload['transactionApprovalDate'] ?? null)) {
             $billedAt = $this->date($payload['transactionApprovalDate'].' '.(is_string($payload['transactionApprovalTime'] ?? null) ? $payload['transactionApprovalTime'] : '00:00:00'));
         }
@@ -49,9 +51,11 @@ final readonly class TransactionMapper
     public function status(?string $status, ?string $type = null): TransactionStatus
     {
         $type = strtoupper((string) $type);
+
         if (str_contains($type, 'CHARGEBACK') || str_contains($type, 'DISPUTE')) {
             return TransactionStatus::Disputed;
         }
+
         if (str_contains($type, 'REFUND')) {
             return TransactionStatus::Refunded;
         }
@@ -71,9 +75,11 @@ final readonly class TransactionMapper
         if (! is_string($currency) || preg_match('/^[A-Za-z]{3}$/', $currency) !== 1) {
             return null;
         }
+
         if (is_int($amount) || is_string($amount)) {
             return new Money($amount, $currency);
         }
+
         if (is_float($amount) && is_string($encoded = json_encode($amount, JSON_PRESERVE_ZERO_FRACTION))) {
             return new Money($encoded, $currency);
         }
@@ -86,6 +92,7 @@ final readonly class TransactionMapper
         if (! is_string($value) || trim($value) === '') {
             return null;
         }
+
         try {
             return new DateTimeImmutable($value);
         } catch (Throwable) {

@@ -20,7 +20,11 @@ use Andriichuk\LaravelBillingBlueSnap\Mappers\SubscriptionMapper;
 
 final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions, SupportsPlanChanges, SupportsQuantityChanges, SupportsSubscriptionTrials
 {
-    public function __construct(private BlueSnapClient $client, private SubscriptionMapper $mapper, private ExceptionMapper $exceptions) {}
+    public function __construct(
+        private BlueSnapClient $client,
+        private SubscriptionMapper $mapper,
+        private ExceptionMapper $exceptions
+    ) {}
 
     public function createSubscription(CreateSubscriptionData $data): SubscriptionData
     {
@@ -34,6 +38,7 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
     public function updateSubscription(SubscriptionReference $subscription, UpdateSubscriptionData $data): SubscriptionData
     {
         $payload = $this->mapper->updatePayload($data);
+
         if ($payload === []) {
             throw InvalidBillingPayload::because('A BlueSnap subscription update must contain at least one change.');
         }
@@ -49,6 +54,7 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
                 CancellationMode::Immediately => $this->client->subscriptions()->cancel($subscription->id),
             };
             $payload = $response->json();
+
             if ($payload === []) {
                 $payload = $this->client->subscriptions()->retrieve($subscription->id)->json();
             }
@@ -99,6 +105,7 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         return $this->exceptions->execute(function () use ($subscription): SubscriptionData {
             $response = $this->client->subscriptions()->activate($subscription->id);
             $payload = $response->json();
+
             if ($payload === []) {
                 $payload = $this->client->subscriptions()->retrieve($subscription->id)->json();
             }
@@ -112,6 +119,7 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         return $this->exceptions->execute(function () use ($subscription): SubscriptionData {
             $response = $this->client->subscriptions()->renew($subscription->id);
             $payload = $response->json();
+
             if ($payload === []) {
                 $payload = $this->client->subscriptions()->retrieve($subscription->id)->json();
             }
@@ -126,6 +134,7 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         return $this->exceptions->execute(function () use ($subscription, $payload): SubscriptionData {
             $response = $this->client->subscriptions()->update($subscription->id, $payload);
             $result = $response->json();
+
             if ($result === []) {
                 $result = $this->client->subscriptions()->retrieve($subscription->id)->json();
             }

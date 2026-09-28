@@ -18,7 +18,11 @@ use Throwable;
 
 final readonly class SubscriptionMapper
 {
-    public function __construct(private BlueSnapPayloadSanitizer $sanitizer, private PaymentSourceMapper $paymentSources, private string $defaultCurrency = 'USD') {}
+    public function __construct(
+        private BlueSnapPayloadSanitizer $sanitizer,
+        private PaymentSourceMapper $paymentSources,
+        private string $defaultCurrency = 'USD'
+    ) {}
 
     /** @return array<string, mixed> */
     public function createPayload(CreateSubscriptionData $data): array
@@ -31,6 +35,7 @@ final readonly class SubscriptionMapper
         $source = $this->paymentSources->forSubscription($data->customer, $data->paymentMethod, $options);
         unset($options['paymentSource'], $options['planId'], $options['subscriptionId'], $options['pfToken'], $options['vaultedShopperId']);
         $payload = [...$options, ...$source, 'planId' => $data->price, 'quantity' => $data->quantity];
+
         if ($data->trialDays !== null) {
             if ($data->trialDays < 0) {
                 throw InvalidBillingPayload::because('Trial days must not be negative.');
@@ -47,9 +52,11 @@ final readonly class SubscriptionMapper
         $this->paymentSources->assertSafeProviderPayload($data->providerOptions);
         $payload = $data->providerOptions;
         unset($payload['subscriptionId'], $payload['status']);
+
         if ($data->price !== null) {
             $payload['planId'] = $data->price;
         }
+
         if ($data->quantity !== null) {
             if ($data->quantity < 1) {
                 throw InvalidBillingPayload::because('Subscription quantity must be at least one.');
@@ -64,11 +71,13 @@ final readonly class SubscriptionMapper
     public function fromProvider(array $payload, string $fallbackType = 'default', ?string $fallbackId = null): SubscriptionData
     {
         $id = $this->scalarString($payload['subscriptionId'] ?? $fallbackId);
+
         if ($id === null) {
             throw InvalidBillingPayload::because('BlueSnap did not return a subscription ID.');
         }
         $status = $this->status($this->scalarString($payload['status'] ?? null));
         $trialEnd = $this->date($payload['trialEndDate'] ?? $payload['trialEndsAt'] ?? null);
+
         if ($status === SubscriptionStatus::Active && $trialEnd !== null && $trialEnd > new DateTimeImmutable) {
             $status = SubscriptionStatus::Trialing;
         }
@@ -121,9 +130,11 @@ final readonly class SubscriptionMapper
         if (! is_string($currency) || preg_match('/^[A-Za-z]{3}$/', $currency) !== 1) {
             return null;
         }
+
         if (is_int($amount) || is_string($amount)) {
             return new Money($amount, $currency);
         }
+
         if (is_float($amount) && is_string($encoded = json_encode($amount, JSON_PRESERVE_ZERO_FRACTION))) {
             return new Money($encoded, $currency);
         }
@@ -136,6 +147,7 @@ final readonly class SubscriptionMapper
         if (! is_string($value) || trim($value) === '') {
             return null;
         }
+
         try {
             return new DateTimeImmutable($value);
         } catch (Throwable) {

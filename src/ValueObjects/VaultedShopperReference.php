@@ -18,6 +18,7 @@ final readonly class VaultedShopperReference implements BlueSnapPaymentSource
     public function __construct(string|int $id)
     {
         $id = trim((string) $id);
+
         if ($id === '') {
             throw InvalidBillingPayload::because('A BlueSnap vaulted shopper ID must not be empty.');
         }

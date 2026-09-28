@@ -13,6 +13,7 @@ final readonly class BlueSnapPlanReference
     public function __construct(string|int $id)
     {
         $id = trim((string) $id);
+
         if ($id === '') {
             throw InvalidBillingPayload::because('A BlueSnap plan ID must not be empty.');
         }

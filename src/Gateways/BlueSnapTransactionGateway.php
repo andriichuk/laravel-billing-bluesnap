@@ -15,7 +15,11 @@ use Andriichuk\LaravelBillingBlueSnap\Mappers\TransactionMapper;
 
 final readonly class BlueSnapTransactionGateway implements ManagesTransactions, SupportsRefunds
 {
-    public function __construct(private BlueSnapClient $client, private TransactionMapper $mapper, private ExceptionMapper $exceptions) {}
+    public function __construct(
+        private BlueSnapClient $client,
+        private TransactionMapper $mapper,
+        private ExceptionMapper $exceptions
+    ) {}
 
     public function retrieveTransaction(TransactionReference $transaction): TransactionData
     {
@@ -30,6 +34,7 @@ final readonly class BlueSnapTransactionGateway implements ManagesTransactions, 
         return $this->exceptions->execute(function () use ($transaction, $amount, $providerOptions): TransactionData {
             $idempotencyKey = is_string($providerOptions['idempotencyKey'] ?? null) ? $providerOptions['idempotencyKey'] : null;
             unset($providerOptions['idempotencyKey'], $providerOptions['transactionId']);
+
             if ($amount !== null) {
                 $providerOptions['amount'] = $amount->amount;
                 $providerOptions['currency'] = $amount->currency;

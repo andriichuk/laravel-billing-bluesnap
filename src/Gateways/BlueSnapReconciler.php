@@ -45,6 +45,7 @@ final readonly class BlueSnapReconciler implements ReconcilesResources
     {
         $data = $resource->rawProviderData();
         $merchantShopperId = $data['merchantShopperId'] ?? null;
+
         if (is_string($merchantShopperId) && str_contains($merchantShopperId, ':')) {
             [$type, $id] = explode(':', $merchantShopperId, 2);
 
@@ -52,10 +53,12 @@ final readonly class BlueSnapReconciler implements ReconcilesResources
         }
 
         $customerId = $resource instanceof SubscriptionData ? $resource->customerId : ($data['vaultedShopperId'] ?? null);
+
         if ($resource instanceof TransactionData && $customerId === null && $resource->subscriptionId !== null) {
             $subscription = $this->subscriptions->retrieveSubscription(new SubscriptionReference($resource->subscriptionId));
             $customerId = $subscription->customerId;
         }
+
         if (is_string($customerId) || is_int($customerId)) {
             $customer = $this->customers->retrieveCustomer(new CustomerReference((string) $customerId));
 
