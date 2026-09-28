@@ -56,7 +56,7 @@ final class ExceptionMapper
             return new RetryableProviderOperation('BlueSnap is temporarily unable to process the operation.', previous: $exception);
         }
         if ($exception instanceof ValidationException) {
-            return InvalidBillingPayload::because('BlueSnap rejected the billing payload.');
+            return new InvalidBillingPayload('BlueSnap rejected the billing payload.', previous: $exception);
         }
 
         return new ProviderRequestFailed('The BlueSnap provider request failed.', previous: $exception);
