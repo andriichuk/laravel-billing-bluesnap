@@ -42,7 +42,9 @@ final readonly class BlueSnapReconciler implements ReconcilesResources
         }
 
         if ($request->model !== null && $request->model !== 'subscription') {
-            throw InvalidBillingPayload::because('BlueSnap sweep reconciliation is available for subscriptions; customer and transaction reconciliation require an ID.');
+            throw InvalidBillingPayload::because(
+                'BlueSnap sweep reconciliation is available for subscriptions; customer and transaction reconciliation require an ID.',
+            );
         }
 
         foreach ($this->subscriptions->allSubscriptions($request->pageSize, $request->cursor) as $subscription) {
