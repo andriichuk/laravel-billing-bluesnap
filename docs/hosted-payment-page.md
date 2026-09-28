@@ -49,4 +49,8 @@ return redirect()->away($url);
 
 The SDK uses `https://sandbox.bluesnap.com` for sandbox checkout and `https://checkout.bluesnap.com` for production. Override `BLUESNAP_CHECKOUT_HOST` only when BlueSnap assigns a different HTTPS checkout origin.
 
+> The production origin is taken from BlueSnap's published examples and has not been exercised against a live
+> production account. Confirm the checkout origin issued to your account and set `BLUESNAP_CHECKOUT_HOST`
+> explicitly before going live.
+
 See BlueSnap's [Encrypt Parameters documentation](https://developers.bluesnap.com/v8976-Tools/reference/encrypt-parameters) for the merchant-console prerequisite and wire format.

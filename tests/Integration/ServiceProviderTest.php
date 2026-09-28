@@ -71,6 +71,34 @@ final class ServiceProviderTest extends TestCase
     }
 
     #[Test]
+    public function an_integer_merchant_id_is_accepted_from_configuration(): void
+    {
+        config()->set('billing.drivers.bluesnap.merchant_id', 1469228);
+        config()->set('billing.drivers.bluesnap.checkout_host', 'https://payments.example.com');
+        app(BillingManager::class)->forgetDrivers();
+
+        $driver = app(BillingManager::class)->driver('bluesnap');
+
+        self::assertInstanceOf(BlueSnapDriver::class, $driver);
+        self::assertSame(
+            'https://payments.example.com/buynow/checkout?plan3173219&merchantid=1469228',
+            $driver->hostedCheckoutUrl(['plan_id' => 3173219]),
+        );
+    }
+
+    #[Test]
+    public function a_merchant_id_of_an_unusable_type_is_rejected(): void
+    {
+        config()->set('billing.drivers.bluesnap.merchant_id', ['1469228']);
+        app(BillingManager::class)->forgetDrivers();
+
+        $this->expectException(InvalidBlueSnapConfiguration::class);
+        $this->expectExceptionMessage('positive integer or a numeric string');
+
+        app(BillingManager::class)->driver('bluesnap');
+    }
+
+    #[Test]
     public function an_empty_merchant_id_is_treated_as_unconfigured_for_api_only_usage(): void
     {
         config()->set('billing.drivers.bluesnap.merchant_id', '');
