@@ -17,16 +17,26 @@ final class RecordingHttpClient implements ClientInterface
     /** @var list<ResponseInterface> */
     private array $responses;
 
+    private ?ResponseInterface $repeatResponse = null;
+
     public function __construct(ResponseInterface ...$responses)
     {
         $this->responses = array_values($responses);
+    }
+
+    public static function repeating(ResponseInterface $response): self
+    {
+        $client = new self;
+        $client->repeatResponse = $response;
+
+        return $client;
     }
 
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         $this->requests[] = $request;
 
-        return array_shift($this->responses) ?? throw new RuntimeException('No fake BlueSnap response is queued.');
+        return array_shift($this->responses) ?? $this->repeatResponse ?? throw new RuntimeException('No fake BlueSnap response is queued.');
     }
 
     public function lastRequest(): RequestInterface
