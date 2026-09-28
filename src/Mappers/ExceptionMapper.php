@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Andriichuk\LaravelBillingBlueSnap\Mappers;
 
 use Andriichuk\BlueSnap\Exception\ApiException;
+use Andriichuk\BlueSnap\Exception\AuthenticationException;
 use Andriichuk\BlueSnap\Exception\ConflictException;
 use Andriichuk\BlueSnap\Exception\NotFoundException;
 use Andriichuk\BlueSnap\Exception\RateLimitException;
@@ -62,6 +63,21 @@ final class ExceptionMapper
 
         if ($exception instanceof ValidationException) {
             return new InvalidBillingPayload('BlueSnap rejected the billing payload.', previous: $exception);
+        }
+
+        if ($exception instanceof AuthenticationException) {
+            $message = $exception->statusCode === 401
+                ? 'BlueSnap authentication failed (HTTP 401); verify the API credentials.'
+                : 'BlueSnap authorization failed (HTTP 403); verify that the calling IP is allowlisted.';
+
+            return new ProviderRequestFailed($message, previous: $exception);
+        }
+
+        if ($exception instanceof ApiException && $exception->statusCode === 415) {
+            return new ProviderRequestFailed(
+                'BlueSnap rejected the media type (HTTP 415); parameter encryption requires XML with Content-Type application/xml.',
+                previous: $exception,
+            );
         }
 
         return new ProviderRequestFailed('The BlueSnap provider request failed.', previous: $exception);

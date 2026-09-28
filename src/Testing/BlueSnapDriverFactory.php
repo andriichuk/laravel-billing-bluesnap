@@ -25,6 +25,7 @@ final readonly class BlueSnapDriverFactory
         return (new BlueSnapManager($app))->driver(array_replace_recursive([
             'username' => 'test-user',
             'password' => 'test-password',
+            'merchant_id' => '1469228',
             'environment' => 'sandbox',
             'api_version' => '3.0',
             'currency' => 'USD',
