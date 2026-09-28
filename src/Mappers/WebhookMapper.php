@@ -51,6 +51,7 @@ final readonly class WebhookMapper
         if (! is_string($value) && ! is_int($value)) {
             return null;
         }
+
         $value = trim((string) $value);
 
         return $value !== '' ? $value : null;

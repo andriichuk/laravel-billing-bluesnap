@@ -39,6 +39,7 @@ final readonly class BlueSnapTransactionGateway implements ManagesTransactions, 
                 $providerOptions['amount'] = $amount->amount;
                 $providerOptions['currency'] = $amount->currency;
             }
+
             $response = $this->client->transactions()->refund($transaction->id, $providerOptions, $idempotencyKey);
 
             return $this->mapper->fromProvider($response->json(), $transaction->id);

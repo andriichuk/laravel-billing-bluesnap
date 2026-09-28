@@ -18,6 +18,7 @@ final readonly class BlueSnapWebhookParser
         if (strtoupper($request->method) !== 'POST' || $request->rawBody === '') {
             throw InvalidBillingPayload::because('A BlueSnap webhook must be a non-empty POST request.');
         }
+
         $payload = [];
         parse_str($request->rawBody, $payload);
 

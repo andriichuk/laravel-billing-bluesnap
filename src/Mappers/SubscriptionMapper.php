@@ -30,6 +30,7 @@ final readonly class SubscriptionMapper
         if ($data->quantity < 1) {
             throw InvalidBillingPayload::because('Subscription quantity must be at least one.');
         }
+
         $options = $data->providerOptions;
         $this->paymentSources->assertSafeProviderPayload($options);
         $source = $this->paymentSources->forSubscription($data->customer, $data->paymentMethod, $options);
@@ -40,6 +41,7 @@ final readonly class SubscriptionMapper
             if ($data->trialDays < 0) {
                 throw InvalidBillingPayload::because('Trial days must not be negative.');
             }
+
             $payload['trialPeriodDays'] = $data->trialDays;
         }
 
@@ -61,6 +63,7 @@ final readonly class SubscriptionMapper
             if ($data->quantity < 1) {
                 throw InvalidBillingPayload::because('Subscription quantity must be at least one.');
             }
+
             $payload['quantity'] = $data->quantity;
         }
 
@@ -75,12 +78,14 @@ final readonly class SubscriptionMapper
         if ($id === null) {
             throw InvalidBillingPayload::because('BlueSnap did not return a subscription ID.');
         }
+
         $status = $this->status($this->scalarString($payload['status'] ?? null));
         $trialEnd = $this->date($payload['trialEndDate'] ?? $payload['trialEndsAt'] ?? null);
 
         if ($status === SubscriptionStatus::Active && $trialEnd !== null && $trialEnd > new DateTimeImmutable) {
             $status = SubscriptionStatus::Trialing;
         }
+
         $amount = $this->money($payload['recurringChargeAmount'] ?? null, $payload['currency'] ?? $this->defaultCurrency);
 
         return new SubscriptionData(

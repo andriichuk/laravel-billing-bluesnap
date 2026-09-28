@@ -32,6 +32,7 @@ final class ConfigureBlueSnapWebhookCommand extends Command
 
             return self::INVALID;
         }
+
         $driver = $billing->driver('bluesnap');
 
         if (! $driver instanceof BlueSnapDriver) {
@@ -39,6 +40,7 @@ final class ConfigureBlueSnapWebhookCommand extends Command
 
             return self::FAILURE;
         }
+
         $disabled = $this->option('disable');
         $disabled = is_array($disabled) ? array_values(array_filter($disabled, 'is_string')) : [];
         $destination = ['ipnUrl' => $url];
@@ -46,6 +48,7 @@ final class ConfigureBlueSnapWebhookCommand extends Command
         foreach (self::FLAGS as $flag) {
             $destination[$flag] = ! in_array($flag, $disabled, true);
         }
+
         $driver->webhooks()->configure([
             'ipnDestinations' => [$destination],
             'ensureNotificationReceipt' => false,

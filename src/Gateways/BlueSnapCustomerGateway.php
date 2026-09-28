@@ -67,6 +67,7 @@ final readonly class BlueSnapCustomerGateway implements ManagesCustomers, Suppor
         if (! HostedFieldsToken::supports($paymentMethod)) {
             throw InvalidBillingPayload::because('BlueSnap payment-method updates require a HostedFieldsToken.');
         }
+
         $token = HostedFieldsToken::fromPaymentMethodReference($paymentMethod);
         $this->exceptions->execute(fn (): Response => $this->client->vaultedShoppers()->update($customer->id, [
             'paymentSources' => ['creditCardInfo' => [['pfToken' => $token->value]]],
@@ -80,11 +81,13 @@ final readonly class BlueSnapCustomerGateway implements ManagesCustomers, Suppor
         if ($location === null) {
             return null;
         }
+
         $path = parse_url($location, PHP_URL_PATH);
 
         if (! is_string($path)) {
             return null;
         }
+
         $id = basename($path);
 
         return $id !== '' ? rawurldecode($id) : null;

@@ -28,6 +28,7 @@ final readonly class BlueSnapReconciler implements ReconcilesResources
         if ($request->model === null || $request->id === null || trim((string) $request->id) === '') {
             throw InvalidBillingPayload::because('BlueSnap reconciliation requires both a resource model and provider ID.');
         }
+
         $id = (string) $request->id;
         $resource = match ($request->model) {
             'customer' => $this->customers->retrieveCustomer(new CustomerReference($id)),

@@ -33,6 +33,7 @@ final class ServiceProviderTest extends TestCase
         if (is_int($command)) {
             self::fail('The route:list command did not return a pending command.');
         }
+
         $command->assertSuccessful();
 
         $this->expectException(InvalidBlueSnapConfiguration::class);

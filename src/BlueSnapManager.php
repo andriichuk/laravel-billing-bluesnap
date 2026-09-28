@@ -46,6 +46,7 @@ final readonly class BlueSnapManager
         if (preg_match('/^[A-Z]{3}$/', $currency) !== 1) {
             throw new InvalidBlueSnapConfiguration('BlueSnap currency must be a three-letter ISO 4217 code.');
         }
+
         $sanitizer = new BlueSnapPayloadSanitizer;
         $paymentSources = new PaymentSourceMapper;
         $exceptions = new ExceptionMapper;
@@ -61,12 +62,14 @@ final readonly class BlueSnapManager
         if (! $verifySignature && ! $this->app->environment(['local', 'testing'])) {
             throw new InvalidBlueSnapConfiguration('BlueSnap webhook signature verification may only be disabled in local or testing environments.');
         }
+
         $environment = $this->environment($config['environment'] ?? 'sandbox');
         $allowedIps = $webhookConfig['allowed_ips'] ?? [];
 
         if (! is_array($allowedIps) || $allowedIps === []) {
             $allowedIps = $environment === Environment::Sandbox ? self::SANDBOX_IPS : self::PRODUCTION_IPS;
         }
+
         $allowedIps = array_values(array_filter($allowedIps, 'is_string'));
         $secret = is_string($webhookConfig['secret'] ?? null) ? $webhookConfig['secret'] : null;
         $verifier = new BlueSnapSignatureVerifier(
@@ -98,6 +101,7 @@ final readonly class BlueSnapManager
                 throw new InvalidBlueSnapConfiguration("A PSR implementation for [{$contract}] must be bound in the container.");
             }
         }
+
         $apiVersion = is_string($config['api_version'] ?? null) ? $config['api_version'] : '3.0';
 
         return new BlueSnapClient(

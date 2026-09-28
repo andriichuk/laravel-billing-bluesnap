@@ -30,11 +30,13 @@ final readonly class CustomerMapper
             if (isset($payload['paymentSources'])) {
                 throw InvalidBillingPayload::because('Conflicting BlueSnap customer payment sources were supplied.');
             }
+
             $token = trim((string) $payload['pfToken']);
 
             if ($token === '') {
                 throw InvalidBillingPayload::because('A BlueSnap Hosted Payment Fields token must not be empty.');
             }
+
             unset($payload['pfToken']);
             $payload['paymentSources'] = ['creditCardInfo' => [['pfToken' => $token]]];
         }
@@ -63,6 +65,7 @@ final readonly class CustomerMapper
         if ($id === null) {
             throw InvalidBillingPayload::because('BlueSnap did not return a vaulted shopper ID.');
         }
+
         $first = $this->scalarString($payload['firstName'] ?? null);
         $last = $this->scalarString($payload['lastName'] ?? null);
         $name = trim(implode(' ', array_filter([$first, $last], static fn (?string $part): bool => $part !== null && $part !== '')));

@@ -25,6 +25,7 @@ final class BlueSnapPayloadSanitizer
             if (in_array($normalized, self::SENSITIVE_KEYS, true)) {
                 continue;
             }
+
             $sanitized[$key] = is_array($value) ? $this->sanitize($value) : $value;
         }
 

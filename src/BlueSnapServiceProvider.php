@@ -30,6 +30,7 @@ final class BlueSnapServiceProvider extends ServiceProvider
         if (! $this->app->runningInConsole()) {
             return;
         }
+
         $this->commands([ConfigureBlueSnapWebhookCommand::class]);
         $this->publishes([
             __DIR__.'/../config/billing-bluesnap.php' => $this->app->configPath('billing-bluesnap.php'),

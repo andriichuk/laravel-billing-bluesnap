@@ -25,6 +25,7 @@ final readonly class TransactionMapper
         if ($id === null) {
             throw InvalidBillingPayload::because('BlueSnap did not return a transaction ID.');
         }
+
         $type = $this->scalarString($payload['cardTransactionType'] ?? $payload['transactionType'] ?? null);
         $processing = $payload['processingInfo'] ?? null;
         $providerStatus = is_array($processing) ? $processing['processingStatus'] ?? null : $payload['status'] ?? null;

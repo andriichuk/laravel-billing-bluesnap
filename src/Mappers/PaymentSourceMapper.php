@@ -55,6 +55,7 @@ final class PaymentSourceMapper
             if ($customer !== null && $customer->id !== $shopper->id) {
                 throw InvalidBillingPayload::because('The customer and vaulted shopper payment source do not match.');
             }
+
             $payload['vaultedShopperId'] = $shopper->id;
 
             return $payload;
