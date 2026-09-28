@@ -15,8 +15,8 @@
     ],
     "require": {
         "php": "^8.5",
-        "andriichuk/bluesnap-php-sdk": "dev-main",
-        "andriichuk/laravel-billing": "dev-main",
+        "andriichuk/bluesnap-php-sdk": "^0.2",
+        "andriichuk/laravel-billing": "^0.1",
         "ext-json": "*",
         "illuminate/config": "^13.0",
         "illuminate/console": "^13.0",
@@ -35,7 +35,7 @@
     "autoload": {"psr-4": {"Andriichuk\\LaravelBillingBlueSnap\\": "src/"}},
     "autoload-dev": {"psr-4": {"Andriichuk\\LaravelBillingBlueSnap\\Tests\\": "tests/"}},
     "extra": {
-        "branch-alias": {"dev-main": "0.1.x-dev"},
+        "branch-alias": {"dev-main": "0.3.x-dev"},
         "laravel": {"providers": ["Andriichuk\\LaravelBillingBlueSnap\\BlueSnapServiceProvider"]}
     },
     "scripts": {
