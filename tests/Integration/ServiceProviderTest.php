@@ -39,4 +39,34 @@ final class ServiceProviderTest extends TestCase
         $this->expectException(InvalidBlueSnapConfiguration::class);
         app(BillingManager::class)->driver('bluesnap');
     }
+
+    #[Test]
+    public function hosted_checkout_uses_merchant_and_checkout_host_from_application_config(): void
+    {
+        config()->set('billing.drivers.bluesnap.merchant_id', '1469228');
+        config()->set('billing.drivers.bluesnap.checkout_host', 'https://payments.example.com');
+        app(BillingManager::class)->forgetDrivers();
+
+        $driver = app(BillingManager::class)->driver('bluesnap');
+
+        self::assertInstanceOf(BlueSnapDriver::class, $driver);
+        self::assertSame(
+            'https://payments.example.com/buynow/checkout?plan3173219&merchantid=1469228',
+            $driver->hostedCheckoutUrl(['plan_id' => 3173219]),
+        );
+    }
+
+    #[Test]
+    public function merchant_id_is_required_only_when_hosted_checkout_is_used(): void
+    {
+        config()->set('billing.drivers.bluesnap.merchant_id');
+        app(BillingManager::class)->forgetDrivers();
+        $driver = app(BillingManager::class)->driver('bluesnap');
+
+        self::assertInstanceOf(BlueSnapDriver::class, $driver);
+        $this->expectException(InvalidBlueSnapConfiguration::class);
+        $this->expectExceptionMessage('merchant ID is required for Hosted Payment Page checkout');
+
+        $driver->hostedCheckoutUrl(['plan_id' => 3173219]);
+    }
 }

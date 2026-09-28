@@ -7,7 +7,8 @@ The official BlueSnap driver for [`andriichuk/laravel-billing`](https://github.c
 - PHP 8.5+
 - Laravel 13
 - A PSR-18 HTTP client and PSR-17 request/stream factories bound in Laravel's container
-- BlueSnap API credentials, merchant ID, and a webhook security-header secret
+- BlueSnap API credentials and a webhook security-header secret
+- A BlueSnap merchant ID when using Hosted Payment Page checkout
 
 ## Installation
 

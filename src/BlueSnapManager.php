@@ -101,11 +101,17 @@ final readonly class BlueSnapManager
     {
         $username = is_string($config['username'] ?? null) ? trim($config['username']) : '';
         $password = is_string($config['password'] ?? null) ? $config['password'] : '';
-        $merchantId = is_string($config['merchant_id'] ?? null) ? trim($config['merchant_id']) : '';
+        $merchantId = $config['merchant_id'] ?? null;
 
-        if ($username === '' || $password === '' || $merchantId === '') {
-            throw new InvalidBlueSnapConfiguration('BlueSnap username, password, and merchant ID are required when resolving the billing driver.');
+        if ($username === '' || $password === '') {
+            throw new InvalidBlueSnapConfiguration('BlueSnap username and password are required when resolving the billing driver.');
         }
+
+        if ($merchantId !== null && ! is_string($merchantId)) {
+            throw new InvalidBlueSnapConfiguration('BlueSnap merchant ID must be a positive integer.');
+        }
+
+        $merchantId = is_string($merchantId) ? trim($merchantId) : null;
 
         foreach ([ClientInterface::class, RequestFactoryInterface::class, StreamFactoryInterface::class] as $contract) {
             if (! $this->app->bound($contract)) {

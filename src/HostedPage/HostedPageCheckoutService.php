@@ -7,6 +7,7 @@ namespace Andriichuk\LaravelBillingBlueSnap\HostedPage;
 use Andriichuk\BlueSnap\BlueSnapClient;
 use Andriichuk\BlueSnap\HostedPage\HostedPageUrl;
 use Andriichuk\LaravelBilling\Exceptions\ProviderRequestFailed;
+use Andriichuk\LaravelBillingBlueSnap\Exceptions\InvalidBlueSnapConfiguration;
 use Andriichuk\LaravelBillingBlueSnap\Exceptions\UnsupportedBlueSnapPayload;
 use Andriichuk\LaravelBillingBlueSnap\Mappers\ExceptionMapper;
 
@@ -48,11 +49,17 @@ final readonly class HostedPageCheckoutService
             throw new UnsupportedBlueSnapPayload('BlueSnap Hosted Payment Page option [email] must be a valid email address.');
         }
 
+        $merchantId = $this->client->configuration->merchantId;
+
+        if ($merchantId === null) {
+            throw new InvalidBlueSnapConfiguration('BlueSnap merchant ID is required for Hosted Payment Page checkout.');
+        }
+
         $enc = $returnUrl === null ? null : $this->encryptReturnUrl($returnUrl);
 
         return HostedPageUrl::build(
             host: $this->client->configuration->checkoutHost(),
-            merchantId: $this->client->configuration->merchantId,
+            merchantId: $merchantId,
             planId: $planId,
             merchantTransactionId: $merchantTransactionId,
             email: $email,
