@@ -111,7 +111,7 @@ final readonly class BlueSnapManager
             throw new InvalidBlueSnapConfiguration('BlueSnap merchant ID must be a positive integer.');
         }
 
-        $merchantId = is_string($merchantId) ? trim($merchantId) : null;
+        $merchantId = is_string($merchantId) && trim($merchantId) !== '' ? trim($merchantId) : null;
 
         foreach ([ClientInterface::class, RequestFactoryInterface::class, StreamFactoryInterface::class] as $contract) {
             if (! $this->app->bound($contract)) {
