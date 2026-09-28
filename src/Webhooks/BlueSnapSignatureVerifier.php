@@ -11,7 +11,9 @@ use DateTimeZone;
 
 final readonly class BlueSnapSignatureVerifier
 {
-    /** @param list<string> $allowedIps */
+    /**
+     * @param  list<string>  $allowedIps
+     */
     public function __construct(
         #[\SensitiveParameter] private ?string $secret,
         private int $timestampTolerance = 300,

@@ -24,7 +24,9 @@ final readonly class SubscriptionMapper
         private string $defaultCurrency = 'USD'
     ) {}
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function createPayload(CreateSubscriptionData $data): array
     {
         if ($data->quantity < 1) {
@@ -48,7 +50,9 @@ final readonly class SubscriptionMapper
         return $payload;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function updatePayload(UpdateSubscriptionData $data): array
     {
         $this->paymentSources->assertSafeProviderPayload($data->providerOptions);
@@ -70,7 +74,9 @@ final readonly class SubscriptionMapper
         return $payload;
     }
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function fromProvider(array $payload, string $fallbackType = 'default', ?string $fallbackId = null): SubscriptionData
     {
         $id = $this->scalarString($payload['subscriptionId'] ?? $fallbackId);

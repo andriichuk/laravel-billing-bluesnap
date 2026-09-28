@@ -17,7 +17,9 @@ final readonly class PaymentFieldsTokenService
         private ExceptionMapper $exceptions
     ) {}
 
-    /** @param array<string, scalar|null> $options */
+    /**
+     * @param  array<string, scalar|null>  $options
+     */
     public function createToken(array $options = []): HostedFieldsToken
     {
         return $this->exceptions->execute(function () use ($options): HostedFieldsToken {

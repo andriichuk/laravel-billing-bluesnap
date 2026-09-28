@@ -39,7 +39,9 @@ final readonly class BlueSnapManager
 
     public function __construct(private Application $app) {}
 
-    /** @param array<string, mixed> $config */
+    /**
+     * @param  array<string, mixed>  $config
+     */
     public function driver(array $config): BlueSnapDriver
     {
         $client = $this->client($config);
@@ -96,7 +98,9 @@ final readonly class BlueSnapManager
         );
     }
 
-    /** @param array<string, mixed> $config */
+    /**
+     * @param  array<string, mixed>  $config
+     */
     private function client(array $config): BlueSnapClient
     {
         $username = is_string($config['username'] ?? null) ? trim($config['username']) : '';

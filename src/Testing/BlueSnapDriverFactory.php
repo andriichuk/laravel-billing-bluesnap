@@ -14,7 +14,9 @@ use Psr\Http\Message\StreamFactoryInterface;
 
 final readonly class BlueSnapDriverFactory
 {
-    /** @param array<string, mixed> $config */
+    /**
+     * @param  array<string, mixed>  $config
+     */
     public static function create(Application $app, RecordingHttpClient $http, array $config = []): BlueSnapDriver
     {
         $factory = new Psr17Factory;

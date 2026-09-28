@@ -64,7 +64,9 @@ final class PaymentSourceMapper
         throw InvalidBillingPayload::because('Unsupported payment method reference for BlueSnap. Use HostedFieldsToken or VaultedShopperReference.');
     }
 
-    /** @param array<string, mixed> $source */
+    /**
+     * @param  array<string, mixed>  $source
+     */
     public function assertSafeProviderPayload(array $source): void
     {
         $forbidden = ['cardnumber', 'cvv', 'cvv2', 'securitycode', 'accountnumber'];

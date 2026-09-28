@@ -44,7 +44,9 @@ use Andriichuk\LaravelBillingBlueSnap\HostedPage\HostedPageCheckoutService;
 
 final readonly class BlueSnapDriver implements BillingDriver, HandlesWebhookProbes, ManagesCustomers, ManagesSubscriptions, ManagesTransactions, ProcessesWebhooks, ReconcilesResources, SupportsHostedCheckout, SupportsPaymentMethodUpdates, SupportsPlanChanges, SupportsQuantityChanges, SupportsRefunds, SupportsSubscriptionTrials
 {
-    /** @var list<Capability> */
+    /**
+     * @var list<Capability>
+     */
     private const array CAPABILITIES = [
         Capability::Customers,
         Capability::Subscriptions,

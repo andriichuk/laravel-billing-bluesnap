@@ -18,7 +18,9 @@ final readonly class CustomerMapper
         private PaymentSourceMapper $paymentSources
     ) {}
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function createPayload(CreateCustomerData $data): array
     {
         $options = $data->providerOptions;
@@ -47,7 +49,9 @@ final readonly class CustomerMapper
         return $payload;
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     public function updatePayload(UpdateCustomerData $data): array
     {
         $this->paymentSources->assertSafeProviderPayload($data->providerOptions);
@@ -57,7 +61,9 @@ final readonly class CustomerMapper
         return [...$payload, ...$this->identity($data->name, $data->email)];
     }
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function fromProvider(array $payload, ?string $fallbackId = null): CustomerData
     {
         $id = $this->scalarString($payload['vaultedShopperId'] ?? $fallbackId);
@@ -78,7 +84,9 @@ final readonly class CustomerMapper
         );
     }
 
-    /** @return array<string, string> */
+    /**
+     * @return array<string, string>
+     */
     private function identity(?string $name, ?string $email): array
     {
         $identity = [];

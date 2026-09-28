@@ -84,13 +84,17 @@ final class ReconciliationTest extends TestCase
         self::assertCount(1, $http->requests);
     }
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function jsonResponse(array $payload): Response
     {
         return new Response(200, ['Content-Type' => 'application/json'], json_encode($payload, JSON_THROW_ON_ERROR));
     }
 
-    /** @return array<string, mixed> */
+    /**
+     * @return array<string, mixed>
+     */
     private function subscriptionPayload(int $subscriptionId, int $shopperId): array
     {
         return [

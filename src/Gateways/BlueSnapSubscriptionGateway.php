@@ -71,7 +71,9 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         ));
     }
 
-    /** @return \Generator<int, SubscriptionData> */
+    /**
+     * @return \Generator<int, SubscriptionData>
+     */
     public function allSubscriptions(int $pageSize, ?string $cursor = null): \Generator
     {
         if ($pageSize < 1 || $pageSize > 500) {
@@ -139,7 +141,9 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         return $this->updateAndMap($subscription, [...$providerOptions, 'quantity' => $quantity]);
     }
 
-    /** @param array<string, scalar|null> $changes */
+    /**
+     * @param  array<string, scalar|null>  $changes
+     */
     public function previewSwitchChargeAmount(SubscriptionReference $subscription, array $changes): ?string
     {
         return $this->exceptions->execute(function () use ($subscription, $changes): ?string {
@@ -178,7 +182,9 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         });
     }
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function updateAndMap(SubscriptionReference $subscription, array $payload): SubscriptionData
     {
         return $this->exceptions->execute(function () use ($subscription, $payload): SubscriptionData {

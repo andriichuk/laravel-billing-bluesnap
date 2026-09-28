@@ -31,7 +31,9 @@ final readonly class BlueSnapWebhookGateway implements ProcessesWebhooks
         return $this->parser->parse($request);
     }
 
-    /** @return array<mixed> */
+    /**
+     * @return array<mixed>
+     */
     public function configuration(): array
     {
         return $this->exceptions->execute(fn (): array => $this->client->webhookConfigurations()->retrieve()->json());

@@ -24,7 +24,9 @@ final class MapperTest extends TestCase
         self::assertSame($expected, $mapper->status($provider));
     }
 
-    /** @return iterable<string, array{string, SubscriptionStatus}> */
+    /**
+     * @return iterable<string, array{string, SubscriptionStatus}>
+     */
     public static function subscriptionStatuses(): iterable
     {
         yield 'active' => ['ACTIVE', SubscriptionStatus::Active];

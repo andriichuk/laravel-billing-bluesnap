@@ -17,7 +17,9 @@ final readonly class TransactionMapper
 {
     public function __construct(private BlueSnapPayloadSanitizer $sanitizer) {}
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function fromProvider(array $payload, ?string $fallbackId = null): TransactionData
     {
         $id = $this->scalarString($payload['transactionId'] ?? $payload['referenceNumber'] ?? $fallbackId);

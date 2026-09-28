@@ -15,7 +15,9 @@ final readonly class WebhookMapper
         private BlueSnapEventNormalizer $normalizer
     ) {}
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     public function fromPayload(array $payload, string $rawBody): ParsedWebhook
     {
         $type = $this->string($payload['transactionType'] ?? $payload['eventType'] ?? null) ?? 'UNKNOWN';
@@ -32,7 +34,9 @@ final readonly class WebhookMapper
         );
     }
 
-    /** @param array<string, mixed> $payload */
+    /**
+     * @param  array<string, mixed>  $payload
+     */
     private function resourceId(array $payload): ?string
     {
         foreach (['referenceNumber', 'transactionId', 'subscriptionId', 'vaultedShopperId', 'accountId', 'contractId'] as $key) {

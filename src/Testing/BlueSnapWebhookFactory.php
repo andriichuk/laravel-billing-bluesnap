@@ -9,7 +9,9 @@ use DateTimeImmutable;
 
 final class BlueSnapWebhookFactory
 {
-    /** @param array<string, scalar> $payload */
+    /**
+     * @param  array<string, scalar>  $payload
+     */
     public static function make(array $payload, string $secret = 'test-webhook-secret', ?DateTimeImmutable $receivedAt = null, string $headerCase = 'canonical'): WebhookRequest
     {
         $receivedAt ??= new DateTimeImmutable;

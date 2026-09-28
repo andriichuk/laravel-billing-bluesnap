@@ -11,10 +11,14 @@ use RuntimeException;
 
 final class RecordingHttpClient implements ClientInterface
 {
-    /** @var list<RequestInterface> */
+    /**
+     * @var list<RequestInterface>
+     */
     public array $requests = [];
 
-    /** @var list<ResponseInterface> */
+    /**
+     * @var list<ResponseInterface>
+     */
     private array $responses;
 
     private ?ResponseInterface $repeatResponse = null;

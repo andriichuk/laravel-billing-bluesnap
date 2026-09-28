@@ -10,10 +10,14 @@ use Illuminate\Console\Command;
 
 final class ConfigureBlueSnapWebhookCommand extends Command
 {
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $signature = 'billing:bluesnap:webhook {url : Public HTTPS billing webhook URL} {--disable=* : BlueSnap notification flags to disable}';
 
-    /** @var string */
+    /**
+     * @var string
+     */
     protected $description = 'Configure the BlueSnap webhook destination and notification types';
 
     private const array FLAGS = [

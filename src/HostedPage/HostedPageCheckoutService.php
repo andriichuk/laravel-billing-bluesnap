@@ -13,7 +13,9 @@ use Andriichuk\LaravelBillingBlueSnap\Mappers\ExceptionMapper;
 
 final readonly class HostedPageCheckoutService
 {
-    /** @var list<string> */
+    /**
+     * @var list<string>
+     */
     private const array OPTIONS = [
         'plan_id',
         'return_url',
@@ -27,7 +29,9 @@ final readonly class HostedPageCheckoutService
         private ExceptionMapper $exceptions,
     ) {}
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     public function checkoutUrl(array $options): string
     {
         $this->assertKnownOptions($options);
@@ -87,7 +91,9 @@ final readonly class HostedPageCheckoutService
         });
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     private function assertKnownOptions(array $options): void
     {
         $unknown = array_diff(array_keys($options), self::OPTIONS);
@@ -100,7 +106,9 @@ final readonly class HostedPageCheckoutService
         }
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     private function requiredPositiveInteger(array $options, string $key): int
     {
         $integer = $this->positiveInteger($options, $key);
@@ -112,7 +120,9 @@ final readonly class HostedPageCheckoutService
         return $integer;
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     private function positiveInteger(array $options, string $key): ?int
     {
         $value = $options[$key] ?? null;
@@ -130,7 +140,9 @@ final readonly class HostedPageCheckoutService
         return $integer;
     }
 
-    /** @param array<string, mixed> $options */
+    /**
+     * @param  array<string, mixed>  $options
+     */
     private function optionalString(array $options, string $key): ?string
     {
         $value = $options[$key] ?? null;
