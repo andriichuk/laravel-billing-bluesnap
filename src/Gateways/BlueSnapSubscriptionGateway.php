@@ -71,6 +71,56 @@ final readonly class BlueSnapSubscriptionGateway implements ManagesSubscriptions
         ));
     }
 
+    /** @return \Generator<int, SubscriptionData> */
+    public function allSubscriptions(int $pageSize, ?string $cursor = null): \Generator
+    {
+        if ($pageSize < 1 || $pageSize > 500) {
+            throw InvalidBillingPayload::because('BlueSnap reconciliation page size must be between 1 and 500.');
+        }
+
+        $after = $cursor;
+
+        do {
+            $query = [
+                'pagesize' => $pageSize,
+                'gettotal' => true,
+                'fulldescription' => true,
+                'after' => $after,
+            ];
+            $payload = $this->exceptions->execute(fn (): array => $this->client->subscriptions()->all($query)->json());
+            $subscriptions = $payload['subscriptions'] ?? [];
+
+            if (! is_array($subscriptions)) {
+                throw InvalidBillingPayload::because('BlueSnap returned an invalid subscriptions page.');
+            }
+
+            $next = null;
+
+            foreach ($subscriptions as $subscription) {
+                if (! is_array($subscription)) {
+                    throw InvalidBillingPayload::because('BlueSnap returned an invalid subscription in a reconciliation page.');
+                }
+
+                $mapped = $this->mapper->fromProvider($subscription);
+                $next = $mapped->reference->id;
+
+                yield $mapped;
+            }
+
+            $lastPage = ($payload['lastPage'] ?? false) === true;
+
+            if ($lastPage || $subscriptions === []) {
+                return;
+            }
+
+            if ($next === null || $next === $after) {
+                throw InvalidBillingPayload::because('BlueSnap reconciliation pagination did not advance.');
+            }
+
+            $after = $next;
+        } while (true);
+    }
+
     public function changePlan(SubscriptionReference $subscription, string $price, array $providerOptions = []): SubscriptionData
     {
         if (trim($price) === '') {
