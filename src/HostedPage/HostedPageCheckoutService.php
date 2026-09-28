@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Andriichuk\LaravelBillingBlueSnap\HostedPage;
 
 use Andriichuk\BlueSnap\BlueSnapClient;
-use Andriichuk\BlueSnap\HostedPage\HostedPageUrl;
+use Andriichuk\BlueSnap\HostedPage\HostedPageRequest;
 use Andriichuk\LaravelBilling\Exceptions\ProviderRequestFailed;
 use Andriichuk\LaravelBillingBlueSnap\Exceptions\InvalidBlueSnapConfiguration;
 use Andriichuk\LaravelBillingBlueSnap\Exceptions\UnsupportedBlueSnapPayload;
@@ -57,15 +57,13 @@ final readonly class HostedPageCheckoutService
 
         $enc = $returnUrl === null ? null : $this->encryptReturnUrl($returnUrl);
 
-        return HostedPageUrl::build(
-            host: $this->client->configuration->checkoutHost(),
-            merchantId: $merchantId,
+        return $this->client->hostedPageUrl()->build(new HostedPageRequest(
             planId: $planId,
             merchantTransactionId: $merchantTransactionId,
             email: $email,
             enc: $enc,
             quantity: $quantity,
-        );
+        ));
     }
 
     private function encryptReturnUrl(string $returnUrl): string
