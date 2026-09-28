@@ -14,6 +14,7 @@ use Andriichuk\LaravelBillingBlueSnap\Gateways\BlueSnapSubscriptionGateway;
 use Andriichuk\LaravelBillingBlueSnap\Gateways\BlueSnapTransactionGateway;
 use Andriichuk\LaravelBillingBlueSnap\Gateways\BlueSnapWebhookGateway;
 use Andriichuk\LaravelBillingBlueSnap\HostedFields\PaymentFieldsTokenService;
+use Andriichuk\LaravelBillingBlueSnap\HostedPage\HostedPageCheckoutService;
 use Andriichuk\LaravelBillingBlueSnap\Mappers\CustomerMapper;
 use Andriichuk\LaravelBillingBlueSnap\Mappers\ExceptionMapper;
 use Andriichuk\LaravelBillingBlueSnap\Mappers\PaymentSourceMapper;
@@ -25,6 +26,7 @@ use Andriichuk\LaravelBillingBlueSnap\Webhooks\BlueSnapPayloadSanitizer;
 use Andriichuk\LaravelBillingBlueSnap\Webhooks\BlueSnapSignatureVerifier;
 use Andriichuk\LaravelBillingBlueSnap\Webhooks\BlueSnapWebhookParser;
 use Illuminate\Contracts\Foundation\Application;
+use InvalidArgumentException;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -80,7 +82,15 @@ final readonly class BlueSnapManager
         $webhooks = new BlueSnapWebhookGateway($client, $verifier, new BlueSnapWebhookParser($webhookMapper), $exceptions);
         $reconciler = new BlueSnapReconciler($customers, $subscriptions, $transactions);
 
-        return new BlueSnapDriver($customers, $subscriptions, $transactions, $webhooks, $reconciler, new PaymentFieldsTokenService($client, $exceptions));
+        return new BlueSnapDriver(
+            $customers,
+            $subscriptions,
+            $transactions,
+            $webhooks,
+            $reconciler,
+            new PaymentFieldsTokenService($client, $exceptions),
+            new HostedPageCheckoutService($client, $exceptions),
+        );
     }
 
     /** @param array<string, mixed> $config */
@@ -88,9 +98,10 @@ final readonly class BlueSnapManager
     {
         $username = is_string($config['username'] ?? null) ? trim($config['username']) : '';
         $password = is_string($config['password'] ?? null) ? $config['password'] : '';
+        $merchantId = is_string($config['merchant_id'] ?? null) ? trim($config['merchant_id']) : '';
 
-        if ($username === '' || $password === '') {
-            throw new InvalidBlueSnapConfiguration('BlueSnap username and password are required when resolving the billing driver.');
+        if ($username === '' || $password === '' || $merchantId === '') {
+            throw new InvalidBlueSnapConfiguration('BlueSnap username, password, and merchant ID are required when resolving the billing driver.');
         }
 
         foreach ([ClientInterface::class, RequestFactoryInterface::class, StreamFactoryInterface::class] as $contract) {
@@ -99,9 +110,26 @@ final readonly class BlueSnapManager
             }
         }
         $apiVersion = is_string($config['api_version'] ?? null) ? $config['api_version'] : '3.0';
+        $checkoutHost = is_string($config['checkout_host'] ?? null) && trim($config['checkout_host']) !== ''
+            ? trim($config['checkout_host'])
+            : null;
+
+        try {
+            $configuration = new Configuration(
+                username: $username,
+                password: $password,
+                merchantId: $merchantId,
+                environment: $this->environment($config['environment'] ?? 'sandbox'),
+                apiVersion: $apiVersion,
+                userAgent: 'andriichuk/laravel-billing-bluesnap',
+                checkoutHost: $checkoutHost,
+            );
+        } catch (InvalidArgumentException $exception) {
+            throw new InvalidBlueSnapConfiguration($exception->getMessage(), previous: $exception);
+        }
 
         return new BlueSnapClient(
-            new Configuration($username, $password, $this->environment($config['environment'] ?? 'sandbox'), $apiVersion, 'andriichuk/laravel-billing-bluesnap'),
+            $configuration,
             $this->app->make(ClientInterface::class),
             $this->app->make(RequestFactoryInterface::class),
             $this->app->make(StreamFactoryInterface::class),

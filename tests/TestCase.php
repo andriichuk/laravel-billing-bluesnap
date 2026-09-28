@@ -25,6 +25,7 @@ abstract class TestCase extends Orchestra
         $app['config']->set('billing.default', 'bluesnap');
         $app['config']->set('billing.drivers.bluesnap.username', 'test-user');
         $app['config']->set('billing.drivers.bluesnap.password', 'test-password');
+        $app['config']->set('billing.drivers.bluesnap.merchant_id', '1469228');
         $app['config']->set('billing.drivers.bluesnap.webhook.secret', 'test-secret');
         $factory = new Psr17Factory;
         $app->instance(ClientInterface::class, new RecordingHttpClient);

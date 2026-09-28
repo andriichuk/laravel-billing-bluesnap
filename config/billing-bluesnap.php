@@ -6,7 +6,9 @@ return [
     'driver' => 'bluesnap',
     'username' => env('BLUESNAP_USERNAME'),
     'password' => env('BLUESNAP_PASSWORD'),
+    'merchant_id' => env('BLUESNAP_MERCHANT_ID'),
     'environment' => env('BLUESNAP_ENVIRONMENT', 'sandbox'),
+    'checkout_host' => env('BLUESNAP_CHECKOUT_HOST'),
     'api_version' => env('BLUESNAP_API_VERSION', '3.0'),
     'currency' => env('BLUESNAP_CURRENCY', 'USD'),
     'webhook' => [

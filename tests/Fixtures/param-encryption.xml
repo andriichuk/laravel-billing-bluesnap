@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<param-encryption xmlns="http://ws.plimus.com">
+  <encrypted-token>opaque%2Btoken%2F%3D</encrypted-token>
+</param-encryption>

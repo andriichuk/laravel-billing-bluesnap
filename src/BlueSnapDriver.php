@@ -11,6 +11,7 @@ use Andriichuk\LaravelBilling\Contracts\ManagesSubscriptions;
 use Andriichuk\LaravelBilling\Contracts\ManagesTransactions;
 use Andriichuk\LaravelBilling\Contracts\ProcessesWebhooks;
 use Andriichuk\LaravelBilling\Contracts\ReconcilesResources;
+use Andriichuk\LaravelBilling\Contracts\SupportsHostedCheckout;
 use Andriichuk\LaravelBilling\Contracts\SupportsPaymentMethodUpdates;
 use Andriichuk\LaravelBilling\Contracts\SupportsPlanChanges;
 use Andriichuk\LaravelBilling\Contracts\SupportsQuantityChanges;
@@ -39,8 +40,9 @@ use Andriichuk\LaravelBillingBlueSnap\Gateways\BlueSnapSubscriptionGateway;
 use Andriichuk\LaravelBillingBlueSnap\Gateways\BlueSnapTransactionGateway;
 use Andriichuk\LaravelBillingBlueSnap\Gateways\BlueSnapWebhookGateway;
 use Andriichuk\LaravelBillingBlueSnap\HostedFields\PaymentFieldsTokenService;
+use Andriichuk\LaravelBillingBlueSnap\HostedPage\HostedPageCheckoutService;
 
-final readonly class BlueSnapDriver implements BillingDriver, HandlesWebhookProbes, ManagesCustomers, ManagesSubscriptions, ManagesTransactions, ProcessesWebhooks, ReconcilesResources, SupportsPaymentMethodUpdates, SupportsPlanChanges, SupportsQuantityChanges, SupportsRefunds, SupportsSubscriptionTrials
+final readonly class BlueSnapDriver implements BillingDriver, HandlesWebhookProbes, ManagesCustomers, ManagesSubscriptions, ManagesTransactions, ProcessesWebhooks, ReconcilesResources, SupportsHostedCheckout, SupportsPaymentMethodUpdates, SupportsPlanChanges, SupportsQuantityChanges, SupportsRefunds, SupportsSubscriptionTrials
 {
     /** @var list<Capability> */
     private const array CAPABILITIES = [
@@ -54,6 +56,7 @@ final readonly class BlueSnapDriver implements BillingDriver, HandlesWebhookProb
         Capability::QuantityChanges,
         Capability::Refunds,
         Capability::PaymentMethodUpdates,
+        Capability::HostedCheckout,
     ];
 
     public function __construct(
@@ -63,6 +66,7 @@ final readonly class BlueSnapDriver implements BillingDriver, HandlesWebhookProb
         private BlueSnapWebhookGateway $webhookGateway,
         private BlueSnapReconciler $reconciler,
         private PaymentFieldsTokenService $hostedFields,
+        private HostedPageCheckoutService $hostedPage,
     ) {}
 
     public function name(): string
@@ -103,6 +107,16 @@ final readonly class BlueSnapDriver implements BillingDriver, HandlesWebhookProb
     public function hostedFields(): PaymentFieldsTokenService
     {
         return $this->hostedFields;
+    }
+
+    public function hostedPage(): HostedPageCheckoutService
+    {
+        return $this->hostedPage;
+    }
+
+    public function hostedCheckoutUrl(array $options): string
+    {
+        return $this->hostedPage->checkoutUrl($options);
     }
 
     public function createCustomer(CreateCustomerData $data): CustomerData

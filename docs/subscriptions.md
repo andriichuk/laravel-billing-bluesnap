@@ -22,3 +22,5 @@ $driver->subscriptions()->resumeSubscription($subscription);
 ```
 
 These extensions do not cause the driver to advertise generic subscription pausing.
+
+To create a BlueSnap-hosted subscription checkout instead, see [Hosted Payment Pages](hosted-payment-page.md).

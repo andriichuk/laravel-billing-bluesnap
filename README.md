@@ -7,7 +7,7 @@ The official BlueSnap driver for [`andriichuk/laravel-billing`](https://github.c
 - PHP 8.5+
 - Laravel 13
 - A PSR-18 HTTP client and PSR-17 request/stream factories bound in Laravel's container
-- BlueSnap API credentials and a webhook security-header secret
+- BlueSnap API credentials, merchant ID, and a webhook security-header secret
 
 ## Installation
 
@@ -43,11 +43,18 @@ assert($driver instanceof BlueSnapDriver);
 
 $token = $driver->hostedFields()->createToken();
 $paymentMethod = $token->toPaymentMethodReference();
+
+$checkoutUrl = $driver->hostedCheckoutUrl([
+    'plan_id' => 3173219,
+    'return_url' => route('billing.bluesnap.return'),
+    'merchant_transaction_id' => 'subscription-42',
+    'email' => 'ada@example.com',
+]);
 ```
 
-The driver supports vaulted shoppers, subscriptions and trials, plan and quantity changes, cancellation modes, transactions, refunds, payment-method updates, signed webhooks, and targeted reconciliation. It intentionally does not advertise pausing, usage billing, provider-independent proration, invoices, hosted checkout, automatic tax, or metered billing.
+The driver supports vaulted shoppers, subscriptions and trials, Hosted Payment Page checkout, plan and quantity changes, cancellation modes, transactions, refunds, payment-method updates, signed webhooks, and targeted reconciliation. It intentionally does not advertise pausing, usage billing, provider-independent proration, invoices, automatic tax, or metered billing.
 
-See the [configuration](docs/configuration.md), [customers](docs/customers.md), [subscriptions](docs/subscriptions.md), [payment sources](docs/payment-sources.md), [webhooks](docs/webhooks.md), and [migration guide](docs/migration-from-cashier-bluesnap.md).
+See the [configuration](docs/configuration.md), [customers](docs/customers.md), [subscriptions](docs/subscriptions.md), [Hosted Payment Pages](docs/hosted-payment-page.md), [payment sources](docs/payment-sources.md), [webhooks](docs/webhooks.md), and [migration guide](docs/migration-from-cashier-bluesnap.md).
 
 ## Quality
 
