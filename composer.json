@@ -1,0 +1,51 @@
+{
+    "name": "andriichuk/laravel-billing-bluesnap",
+    "description": "Official BlueSnap driver for andriichuk/laravel-billing.",
+    "keywords": ["billing", "bluesnap", "laravel", "payments", "subscriptions"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [{"name": "Serhii Andriichuk", "email": "andriichuk29@gmail.com"}],
+    "support": {
+        "issues": "https://github.com/andriichuk/laravel-billing-bluesnap/issues",
+        "source": "https://github.com/andriichuk/laravel-billing-bluesnap"
+    },
+    "repositories": [
+        {"type": "vcs", "url": "https://github.com/andriichuk/laravel-billing"},
+        {"type": "vcs", "url": "https://github.com/andriichuk/bluesnap-php-sdk"}
+    ],
+    "require": {
+        "php": "^8.5",
+        "andriichuk/bluesnap-php-sdk": "dev-main",
+        "andriichuk/laravel-billing": "dev-main",
+        "ext-json": "*",
+        "illuminate/config": "^13.0",
+        "illuminate/console": "^13.0",
+        "illuminate/contracts": "^13.0",
+        "illuminate/support": "^13.0",
+        "psr/http-client": "^1.0",
+        "psr/http-factory": "^1.0"
+    },
+    "require-dev": {
+        "larastan/larastan": "^3.0",
+        "laravel/pint": "^1.0",
+        "nyholm/psr7": "^1.8",
+        "orchestra/testbench": "^11.0",
+        "phpunit/phpunit": "^12.0"
+    },
+    "autoload": {"psr-4": {"Andriichuk\\LaravelBillingBlueSnap\\": "src/"}},
+    "autoload-dev": {"psr-4": {"Andriichuk\\LaravelBillingBlueSnap\\Tests\\": "tests/"}},
+    "extra": {
+        "branch-alias": {"dev-main": "0.1.x-dev"},
+        "laravel": {"providers": ["Andriichuk\\LaravelBillingBlueSnap\\BlueSnapServiceProvider"]}
+    },
+    "scripts": {
+        "format": "pint",
+        "format:test": "pint --test",
+        "test": "phpunit",
+        "analyse": "phpstan analyse --debug --no-progress --memory-limit=1G",
+        "check": ["@format:test", "@test", "@analyse"]
+    },
+    "config": {"allow-plugins": {}, "sort-packages": true},
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
